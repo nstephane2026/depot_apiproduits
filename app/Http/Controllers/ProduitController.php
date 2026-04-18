@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreProduitRequest;
+use App\Http\Requests\UpdateProduitRequest;
 use App\Models\Produit;
 use Illuminate\Http\Request;
 
@@ -130,16 +132,22 @@ class ProduitController extends Controller
     return $produit;
   }
 
-  public function store(Request $request){
-   $produit= Produit::create($request->all());
+  public function store(StoreProduitRequest $request){
+
+   
+   $produit= Produit::create($request->validated());
   return response()->json($produit,201);
 
   }
 
-  public function update(Request $request, $id){
+  public function update(UpdateProduitRequest $request, $id){
     $produit= Produit::findOrFail($id);
-    $produit->update($request->all());
-    return response()->json($produit, 201);
+    $produit->update($request->validated());
+    return response()->json([
+        'success' => true,
+        'message' => 'Produit mis à jour avec succès',
+        'data' => $produit
+    ]);
   }
 
   public function destroy($id){
